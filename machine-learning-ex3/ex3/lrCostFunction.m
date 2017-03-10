@@ -38,9 +38,29 @@ grad = zeros(size(theta));
 
 
 
+t = theta;
+t(1) = 0;
+
+J = sum(( -1 * y .* log(sigmoid(X*theta)) - (1-y).* log(1-sigmoid(X*theta))))/m;
+
+jr = sum((t.^2))*lambda/(2*m);
+
+J = J+jr;
+
+grad = X'*(sigmoid(X*theta) - y)/m+t*lambda/m;
+
+%grad = grad/m;
 
 
+%tg = sum(t)*lambda/m;
+%grad = grad+tg;
 
+%for j = 1:size(theta)
+%  for i = 1:m
+%    grad(j) =  grad(j)+(sigmoid(theta'*X(i, :)') - y(i))*X(i, j);
+%  endfor
+%  grad(j) =grad(j)/m;
+%endfor
 
 
 
