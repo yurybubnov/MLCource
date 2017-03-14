@@ -62,26 +62,63 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+yy = 1:num_labels == y;
 
 
+X1 = [ones(m, 1) X];
+a2 = sigmoid(X1*Theta1');
+a2 = [ones(size(a2, 1), 1) a2];
 
+a3 = sigmoid(a2*Theta2');
+J = sum(sum(( -1 * yy .* log(a3) - (1-yy).* log(1-a3))))/m;
+t1 = Theta1;
+t1(:, 1) = zeros(size(Theta1, 1), 1);
 
+t2 = Theta2;
+t2(:, 1) = zeros(size(Theta2, 1), 1);
+jr = lambda*(sum(sum(t1.^2))+sum(sum(t2.^2)))/(2*m);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+J = J+jr;
 % -------------------------------------------------------------
+Theta20 = Theta2;
+Theta20( :, 1) =  zeros(size(Theta20, 1), 1);
+%imagesc(Theta20);
+for i = 1:m
+%1
 
+  yy = 1:num_labels == y(i);
+  a1 = X(i, :)';
+  a11 = [1; a1];
+  
+  z2 = Theta1*a11;
+  a2 = sigmoid(z2);
+  a21 = [1;  a2];
+  
+  z3 = Theta2*a21;
+  a3 = sigmoid(z3);
+
+  
+%2  
+  d3 = a3-yy';
+  
+%3
+  d2 = Theta2(:,2:end)'*d3.* sigmoidGradient(z2);
+  
+  Theta2_grad = Theta2_grad+d3*a21';
+  
+  Theta1_grad = Theta1_grad+d2*a11';
+endfor
+Theta1_grad = Theta1_grad/m;
+Theta2_grad = Theta2_grad/m;
+
+t10 = Theta1;
+t10(:, 1) = 0;
+
+t20 = Theta2;
+t20(:, 1) = 0;
+
+Theta1_grad = Theta1_grad + (lambda/m)*t10;
+Theta2_grad = Theta2_grad + (lambda/m)*t20;
 % =========================================================================
 
 % Unroll gradients
