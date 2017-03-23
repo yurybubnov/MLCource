@@ -24,6 +24,17 @@ grad = zeros(size(theta));
 
 
 
+t = theta;
+t(1) = 0;
+
+J = sum(( X*theta - y).^2)/(2*m);
+
+jr = sum((t.^2))*lambda/(2*m);
+
+J = J+jr;
+
+grad = X'*(X*theta - y)/m+t*lambda/m;
+
 
 
 
